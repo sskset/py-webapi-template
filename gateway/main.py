@@ -1,5 +1,10 @@
 from fastapi import FastAPI, Request, HTTPException
 import httpx
+import logging
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="API Gateway")
 
@@ -16,8 +21,11 @@ async def root():
 
 @app.api_route("/{service}/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
 async def proxy(service: str, path: str, request: Request):
+    logger.debug(f"Request: {service}/{path} {request}")
+
     if service not in SERVICE_URLS:
-        raise HTTPException(status_code=404, detail=f"Service '{service}' not found")
+        raise HTTPException(status_code=404, detail=f"Service '{
+                            service}' not found")
 
     service_url = f"{SERVICE_URLS[service]}/{path}"
 

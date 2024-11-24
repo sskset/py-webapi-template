@@ -2,8 +2,8 @@ services:
   # Gateway Service
   gateway:
     build:
-      context: .
-      dockerfile: ./gateway/Dockerfile
+      context: ./gateway
+      dockerfile: Dockerfile
     container_name: gateway
     ports:
       - '8000:8000' # Gateway exposed on port 8080
@@ -14,16 +14,15 @@ services:
 
   subscription_service:
     build:
-      context: .
-      dockerfile: ./subscription_service/Dockerfile
+      context: ./subscription_service
+      dockerfile: Dockerfile
     container_name: subscription_service
     ports:
       - '8001:8000' # Expose the FastAPI service on port 8001
-    depends_on:
-      - subscription_db #Ensure the Postgresql starts before the service
     environment:
-      DATABASE_URL: 'postgresql://postgres:postgres@subscription_db:5432/subscription_db' # Connection string to PostgreSQL
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/subscription_db' # Connection string to PostgreSQL
+    depends_on: 
+      - subscription_db
 
   subscription_db:
     image: postgres:15
@@ -33,7 +32,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: subscription_db
     ports:
-      - '5432:5432'
+      - '6432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 volumes:
