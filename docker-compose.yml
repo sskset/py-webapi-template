@@ -22,7 +22,7 @@ services:
     depends_on:
       - subscription_db #Ensure the Postgresql starts before the service
     environment:
-      DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/subscription_db' # Connection string to PostgreSQL
+      DATABASE_URL: 'postgresql://postgres:postgres@subscription_db:5432/subscription_db' # Connection string to PostgreSQL
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   subscription_db:
